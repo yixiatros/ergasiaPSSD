@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +19,8 @@ public class UserConfig {
 
     @Bean
     CommandLineRunner userCommandLineRunner(UserRepository userRepository,
-                                            RoleRepository roleRepository) {
+                                            RoleRepository roleRepository,
+                                            PasswordEncoder passwordEncoder) {
         return args -> {
             createRoleIfNotFound("ROLE_ADMIN", roleRepository);
             createRoleIfNotFound("ROLE_USER", roleRepository);
@@ -28,14 +31,16 @@ public class UserConfig {
             maria.setName("Maria");
             maria.setEmail("maria@testmail.com");
             maria.setUsername("maria");
-            maria.setPassword("maria123");
+            maria.setPassword(passwordEncoder.encode("maria123"));
+            maria.setRegistrationDate(LocalDateTime.now());
             optionalAdminRole.ifPresent(role -> maria.setRoles(Arrays.asList(role)));
 
             User giorgos = new User();
             giorgos.setName("Giorgos");
             giorgos.setEmail("giorgos@testmail.com");
             giorgos.setUsername("giorgos");
-            giorgos.setPassword("giorgos123");
+            giorgos.setPassword(passwordEncoder.encode("giorgos123"));
+            giorgos.setRegistrationDate(LocalDateTime.now());
             optionalUserRole.ifPresent(role -> giorgos.setRoles(Arrays.asList(role)));
 
             userRepository.saveAll(List.of(maria, giorgos));
