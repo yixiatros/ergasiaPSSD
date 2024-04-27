@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth
                             .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/vendor/**", "/fonts/**").permitAll()
-                            .requestMatchers("/index", "/").permitAll()
+                            .requestMatchers("/index", "/", "/error/**").permitAll()
                             .requestMatchers("/users/logout").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                             .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS") // restrict access to login/register page to loggedIn users
                             .anyRequest().authenticated();

@@ -33,7 +33,7 @@ public class UserConfig {
             maria.setUsername("maria");
             maria.setPassword(passwordEncoder.encode("maria123"));
             maria.setRegistrationDate(LocalDateTime.now());
-            optionalAdminRole.ifPresent(role -> maria.setRoles(Arrays.asList(role)));
+            optionalAdminRole.ifPresent(maria::addRole);
 
             User giorgos = new User();
             giorgos.setName("Giorgos");
@@ -41,7 +41,7 @@ public class UserConfig {
             giorgos.setUsername("giorgos");
             giorgos.setPassword(passwordEncoder.encode("giorgos123"));
             giorgos.setRegistrationDate(LocalDateTime.now());
-            optionalUserRole.ifPresent(role -> giorgos.setRoles(Arrays.asList(role)));
+            optionalUserRole.ifPresent(giorgos::addRole);
 
             userRepository.saveAll(List.of(maria, giorgos));
         };

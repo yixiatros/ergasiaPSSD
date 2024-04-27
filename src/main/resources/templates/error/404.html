@@ -4,11 +4,23 @@
       xmlns:x-transition="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Index</title>
+    <title>404</title>
 
     <th:block th:replace="~{fragments/navbar :: headerfiles}"></th:block>
+
+    <style>
+        .container .row {
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
     <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container">
+        <h1 class="row justify-content-center align-items-center">
+            Oops! Page Not Found.
+        </h1>
+    </div>
 </body>
 </html>
