@@ -23,9 +23,19 @@ public class UserConfig {
                                             PasswordEncoder passwordEncoder) {
         return args -> {
             createRoleIfNotFound("ROLE_ADMIN", roleRepository);
-            createRoleIfNotFound("ROLE_USER", roleRepository);
+            createRoleIfNotFound("ROLE_TEACHER", roleRepository);
+            createRoleIfNotFound("ROLE_STUDENT", roleRepository);
             Optional<Role> optionalAdminRole = roleRepository.findRoleByName("ROLE_ADMIN");
-            Optional<Role> optionalUserRole = roleRepository.findRoleByName("ROLE_USER");
+            Optional<Role> optionalTeacherRole = roleRepository.findRoleByName("ROLE_TEACHER");
+            Optional<Role> optionalStudentRole = roleRepository.findRoleByName("ROLE_STUDENT");
+
+            User admin = new User();
+            admin.setName("Admin");
+            admin.setEmail("admin@testmail.com");
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin"));
+            admin.setRegistrationDate(LocalDateTime.now());
+            optionalAdminRole.ifPresent(admin::addRole);
 
             User maria = new User();
             maria.setName("Maria");
@@ -33,7 +43,7 @@ public class UserConfig {
             maria.setUsername("maria");
             maria.setPassword(passwordEncoder.encode("maria123"));
             maria.setRegistrationDate(LocalDateTime.now());
-            optionalAdminRole.ifPresent(maria::addRole);
+            optionalTeacherRole.ifPresent(maria::addRole);
 
             User giorgos = new User();
             giorgos.setName("Giorgos");
@@ -41,9 +51,9 @@ public class UserConfig {
             giorgos.setUsername("giorgos");
             giorgos.setPassword(passwordEncoder.encode("giorgos123"));
             giorgos.setRegistrationDate(LocalDateTime.now());
-            optionalUserRole.ifPresent(giorgos::addRole);
+            optionalStudentRole.ifPresent(giorgos::addRole);
 
-            userRepository.saveAll(List.of(maria, giorgos));
+            userRepository.saveAll(List.of(admin, maria, giorgos));
         };
     }
 

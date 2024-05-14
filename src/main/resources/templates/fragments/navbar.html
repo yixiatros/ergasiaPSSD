@@ -3,25 +3,31 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       xmlns:x-transition="http://www.w3.org/1999/xhtml">
 <head th:fragment="headerfiles">
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+
 </head>
 <body>
-  <nav th:fragment="navbar" class="navbar navbar-expand-lg bg-light">
+  <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
       <a class="navbar-brand" th:href="@{/index}">TestNavbar</a>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" th:href="@{/index}">Home</a>
+            <a class="nav-link" aria-current="page" th:href="@{/index}">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+          <li sec:authorize="hasAuthority('ROLE_TEACHER')" class="nav-item">
+            <a class="nav-link" href="#">My Quizzes</a>
           </li>
-          <li class="nav-item dropdown">
+          <!--<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown
             </a>
@@ -31,12 +37,21 @@
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
-          </li>
+          </li>-->
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+
+        <!--   Login / Register   -->
+        <div sec:authorize="isAnonymous()" class="d-flex" >
+          <a class="navbar-brand" th:href="@{/users/login}" >Login</a>
+          <div class="navbar-brand" >/</div>
+          <a class="navbar-brand" th:href="@{/users/register}" >Register</a>
+        </div>
+
+        <!--   Logout   -->
+        <form sec:authorize="isAuthenticated()" action="#" th:action="@{/users/logout}" method="post" class="d-flex" role="form" >
+          <button type="submit" class="btn btn-secondary" th:text="${#authentication.getName()}">Logout</button>
         </form>
+
       </div>
     </div>
   </nav>

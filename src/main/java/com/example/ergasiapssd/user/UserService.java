@@ -1,15 +1,21 @@
 package com.example.ergasiapssd.user;
 
+import com.example.ergasiapssd.security.LogoutService;
 import com.example.ergasiapssd.security.auth.AuthenticationRequest;
 import com.example.ergasiapssd.security.auth.AuthenticationResponse;
 import com.example.ergasiapssd.security.auth.AuthenticationService;
 import com.example.ergasiapssd.security.auth.RegisterRequest;
 import com.example.ergasiapssd.user.role.Role;
 import com.example.ergasiapssd.user.role.RoleRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,17 +23,19 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     private final AuthenticationService authenticationService;
-
-    private final RoleRepository roleRepository;
+    private final LogoutService logoutService;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        AuthenticationService authenticationService,
+                       LogoutService logoutService,
                        RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
+        this.logoutService = logoutService;
         this.roleRepository = roleRepository;
     }
 
@@ -57,7 +65,16 @@ public class UserService {
         );
     }
 
-    public AuthenticationResponse registerUser(User user) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        logoutService.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+
+        CookieClearingLogoutHandler cookieClearingLogoutHandler = new CookieClearingLogoutHandler(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
+        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+        cookieClearingLogoutHandler.logout(request, response, null);
+        securityContextLogoutHandler.logout(request, response, null);
+    }
+
+    public AuthenticationResponse registerUser(User user, String roleName) {
         Optional<User> userOptional = userRepository.findUserByEmail(user.getEmail());
         Optional<User> userOptional1 = userRepository.findUserByUsername(user.getUsername());
 
@@ -67,7 +84,7 @@ public class UserService {
         if (userOptional1.isPresent())
             return AuthenticationResponse.builder().accessToken(null).refreshToken("Username taken.").build();
 
-        Optional<Role> roleOptional = roleRepository.findRoleByName("ROLE_USER");
+        Optional<Role> roleOptional = roleRepository.findRoleByName(roleName);
         if (roleOptional.isEmpty())
             return AuthenticationResponse.builder().accessToken(null).refreshToken("Something went wrong.").build();
 

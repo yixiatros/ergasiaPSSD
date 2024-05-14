@@ -30,7 +30,7 @@ public class SecurityConfig {
                     auth
                             .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/vendor/**", "/fonts/**").permitAll()
                             .requestMatchers("/index", "/", "/error/**").permitAll()
-                            .requestMatchers("/users/logout").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                            .requestMatchers("/users/logout").hasAnyAuthority("ROLE_ADMIN", "ROLE_STUDENT", "ROLE_TEACHER")
                             .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS") // restrict access to login/register page to loggedIn users
                             .anyRequest().authenticated();
                 })

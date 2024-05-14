@@ -7,8 +7,37 @@
     <title>Index</title>
 
     <th:block th:replace="~{fragments/navbar :: headerfiles}"></th:block>
+
+    <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+
 </head>
 <body>
-    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <nav class="navbar-custom" th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div id="banner">
+        <H2>Create or Solve</H2>
+        <H1>Quizzes,</H1>
+        <h4>with a few simple clicks from anywhere.</h4>
+    </div>
+
+    <div id="services">
+        <div class="centered">
+            <section class="cards">
+                <div class="card">
+                    <div class="container">
+                        <img src="create.png" alt="Create" style="width:100%">
+                        <h1><b>Create Quiz</b></h1>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="container">
+                        <img src="solve.png" alt="Solve" style="width:100%">
+                        <h1><b>Solve</b></h1>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
 </body>
 </html>

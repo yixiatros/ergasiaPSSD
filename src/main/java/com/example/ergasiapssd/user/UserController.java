@@ -44,6 +44,7 @@ public class UserController {
     @GetMapping(path = "/login")
     public String login(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication != null && authentication.isAuthenticated()){
             Optional<User> userOptional = userService.getUserByUsername(authentication.getName());
             if (userOptional.isPresent())
@@ -82,6 +83,16 @@ public class UserController {
         return editSession(authenticationResponse, request);
     }
 
+    @PostMapping(path = "/logout")
+    public RedirectView logout(Model model,
+                         HttpServletRequest request,
+                         HttpServletResponse response) {
+
+        userService.logout(request, response);
+
+        return new RedirectView("/index");
+    }
+
     @GetMapping(path = "/register")
     public String register(Model model) {
         model.addAttribute("newUser", new User());
@@ -97,8 +108,10 @@ public class UserController {
 
     @PostMapping(path = "/register")
     public ResponseEntity<String> registerUser(@ModelAttribute User newUser,
+                                               @RequestParam("roleRadio") String roleName,
                                                HttpServletRequest request) {
-        AuthenticationResponse authenticationResponse = userService.registerUser(newUser);
+
+        AuthenticationResponse authenticationResponse = userService.registerUser(newUser, roleName);
 
         if (authenticationResponse.getAccessToken() == null) {
             HttpHeaders headers = new HttpHeaders();
