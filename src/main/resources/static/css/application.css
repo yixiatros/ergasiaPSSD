@@ -3,7 +3,7 @@
 body {
     color: var(--light-primary-color);
     background-color: var(--color-surface-300);
-    font-family: "Franklin Gothic Demi";
+    font-family: 'Ubuntu', sans-serif;
 }
 
 .navbar-custom {
@@ -44,7 +44,8 @@ body {
 }
 
 .icon {
-    margin-right: 0.4em;
+    margin-left: 1.8em;
+    display: inline-block;
 }
 .circle {
     display: inline-block;
@@ -52,6 +53,7 @@ body {
     width: 6rem;
     margin-top: -1.5em;
     margin-left: -1.5em;
+    padding-top: 1em;
 }
 
 #services {
@@ -103,5 +105,23 @@ body {
     .card {
         max-width: calc(50% -  1em);
     }
+}
+
+.footer-custom {
+    margin-top: 2.5em;
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--background-color);
+    color: var(--light-primary-color);
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+.footer-custom a {
+    color: #0a1415;
+}
+.footer-custom a:hover {
+    color: var(--primary-color);
 }
 

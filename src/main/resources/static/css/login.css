@@ -1,0 +1,170 @@
+@import url("colors.css");
+
+.logo {
+    font-size: 2.5em;
+    padding-top: 2.2em;
+    margin-bottom: -2.5em;
+}
+
+.logo2 {
+    font-size: 2.5em;
+    padding-top: 1.5em;
+    margin-bottom: -2.5em;
+}
+
+.main {
+    background-color: var(--background-color);
+    width: 400px;
+    height: 400px;
+    margin: 7em auto;
+    border-radius: 1.5em;
+    box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+}
+
+.main2 {
+    background-color: var(--background-color);
+    width: 400px;
+    height: 500px;
+    margin: 7em auto;
+    border-radius: 1.5em;
+    box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+}
+
+.sign {
+    padding-top: 40px;
+    color: var(--light-primary-color);
+    font-weight: bold;
+    font-size: 23px;
+}
+
+.username, .password, .email {
+    width: 76%;
+    font-weight: 700;
+    color: var(--light-primary-color);
+    font-size: 14px;
+    letter-spacing: 1px;
+    background: rgba(136, 126, 126, 0.04);
+    padding: 10px 20px;
+    border-radius: 20px;
+    outline: none;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0.02);
+    margin-left: 46px;
+    text-align: center;
+    margin-bottom: 27px;
+}
+
+.radio-custom {
+    text-align: center;
+}
+
+form.form1 {
+    padding-top: 40px;
+}
+
+.username:focus, .password:focus, .email:focus {
+    border: 2px solid rgba(198, 189, 181, 0.18) !important;
+
+}
+
+.submit {
+    cursor: pointer;
+    border-radius: 5em;
+    color: #fff;
+    background: linear-gradient(to right, var(--primary-color), var(--color-primary-300));
+    border: 0;
+    padding: 10px 40px;
+    font-family: 'Ubuntu', sans-serif;
+    margin-left: 35%;
+    font-size: 13px;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+}
+
+.register {
+    text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
+}
+
+a {
+    text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
+    color: var(--color-primary-400);
+    text-decoration: none
+}
+
+@media (max-width: 600px) {
+    .main {
+        border-radius: 0px;
+    }
+}
+
+.container-custom {
+    margin-top: -2em;
+    margin-bottom: -0.5em;
+}
+.wrapper{
+    display: inline-flex;
+    height: 90px;
+    width: 350px;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 5px;
+    padding: 20px 15px;
+}
+.wrapper .option{
+    background: var(--color-primary-400);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0 10px;
+    border: 2px solid var(--color-primary-400);
+    transition: all 0.3s ease;
+}
+.wrapper .option .dot{
+    height: 15px;
+    width: 15px;
+    background: #d9d9d9;
+    border-radius: 50%;
+    position: relative;
+}
+.wrapper .option .dot::before{
+    position: absolute;
+    content: "";
+    top: 3px;
+    left: 3px;
+    width: 9px;
+    height: 9px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(1.5);
+    transition: all 0.3s ease;
+}
+input[type="radio"]{
+    display: none;
+}
+#studentRadio:checked:checked ~ .studentRadio,
+#teacherRadio:checked:checked ~ .teacherRadio {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+}
+#studentRadio:checked:checked ~ .studentRadio .dot,
+#teacherRadio:checked:checked ~ .teacherRadio .dot {
+    background: #fff;
+}
+#studentRadio:checked:checked ~ .studentRadio .dot::before,
+#teacherRadio:checked:checked ~ .teacherRadio .dot::before {
+    opacity: 1;
+    transform: scale(1);
+}
+.wrapper .option span{
+    font-size: 15px;
+    color: #d9d9d9;
+}
+#studentRadio:checked:checked ~ .studentRadio span,
+#teacherRadio:checked:checked ~ .teacherRadio span {
+    color: #d9d9d9;
+}
