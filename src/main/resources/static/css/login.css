@@ -32,7 +32,7 @@
 
 .sign {
     padding-top: 40px;
-    color: var(--light-primary-color);
+    color: var(--color-primary-500);
     font-weight: bold;
     font-size: 23px;
 }
@@ -40,10 +40,10 @@
 .username, .password, .email {
     width: 76%;
     font-weight: 700;
-    color: var(--light-primary-color);
+    color: var(--background-color);
     font-size: 14px;
     letter-spacing: 1px;
-    background: rgba(136, 126, 126, 0.04);
+    background: var(--light-primary-color);
     padding: 10px 20px;
     border-radius: 20px;
     outline: none;
@@ -71,13 +71,19 @@ form.form1 {
     cursor: pointer;
     border-radius: 5em;
     color: #fff;
-    background: linear-gradient(to right, var(--primary-color), var(--color-primary-300));
     border: 0;
     padding: 10px 40px;
     font-family: 'Ubuntu', sans-serif;
     margin-left: 35%;
     font-size: 13px;
     box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+
+    background: linear-gradient(to right, var(--primary-color), var(--color-primary-300));
+    transition: opacity 0.25s linear;
+    opacity: 1;
+}
+.submit:hover {
+    opacity: 0.8;
 }
 
 .register {
@@ -126,7 +132,7 @@ a {
 .wrapper .option .dot{
     height: 15px;
     width: 15px;
-    background: #d9d9d9;
+    background: var(--light-primary-color);
     border-radius: 50%;
     position: relative;
 }
@@ -153,7 +159,7 @@ input[type="radio"]{
 }
 #studentRadio:checked:checked ~ .studentRadio .dot,
 #teacherRadio:checked:checked ~ .teacherRadio .dot {
-    background: #fff;
+    background: var(--light-primary-color);
 }
 #studentRadio:checked:checked ~ .studentRadio .dot::before,
 #teacherRadio:checked:checked ~ .teacherRadio .dot::before {
@@ -162,9 +168,9 @@ input[type="radio"]{
 }
 .wrapper .option span{
     font-size: 15px;
-    color: #d9d9d9;
+    color: var(--light-primary-color);
 }
 #studentRadio:checked:checked ~ .studentRadio span,
 #teacherRadio:checked:checked ~ .teacherRadio span {
-    color: #d9d9d9;
+    color: var(--light-primary-color);
 }

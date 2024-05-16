@@ -15,12 +15,16 @@
     </style>
 </head>
 <body>
-<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<div class="container">
-    <h1 class="row justify-content-center align-items-center">
-        Oops! Seems you do not have permission to this page.
-    </h1>
-</div>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container">
+        <h1 class="row justify-content-center align-items-center">
+            Oops! Seems you do not have permission to this page.
+        </h1>
+    </div>
+
+    <nav class="navbar-custom" th:replace="~{fragments/footer :: footer}"></nav>
+
 </body>
 </html>

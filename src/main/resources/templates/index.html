@@ -55,17 +55,19 @@
         <h2 style="padding: 0.5em;">Start Now</h2>
         <div class="centered">
             <section class="cards">
-                <div class="card">
+                <div class="card" th:href="@{/quizzes/create}">
                     <div class="container">
                         <i class="bi bi-file-earmark-plus-fill" style="font-size: 5em;"></i>
                         <h1><b>Create Quiz</b></h1>
                     </div>
+                    <a th:href="@{/quizzes/create}" class="stretched-link">&nbsp;</a>
                 </div>
                 <div class="card">
                     <div class="container">
                         <i class="bi bi-award-fill" style="font-size: 5em;"></i>
                         <h1><b>Solve</b></h1>
                     </div>
+                    <a class="stretched-link">&nbsp;</a>
                 </div>
             </section>
         </div>

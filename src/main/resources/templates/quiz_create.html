@@ -13,9 +13,56 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+    <link rel="stylesheet" th:href="@{/css/quiz.css}" href="../static/css/quiz.css"/>
 
+    <script type="text/javascript" src="../static/js/quiz_create.js" th:src="@{/js/quiz_create.js}"></script>
 </head>
 <body>
+
+    <nav class="navbar-custom" th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container">
+        <form th:action="@{/quizzes/create/new}" method="get">
+            <div class="form-group">
+                <label for="title"><h2>Title</h2></label>
+                <input class="form-control" id="title" placeholder="Write your quiz title here..." type="text" name="title">
+            </div>
+
+            <div id="newQuestion">
+                <div class="question" id="question" style="display: none;">
+                    <label class="input-label-custom">Question Title</label>
+                    <a class="trash" onclick="trash(this)"><i class="bi bi-trash-fill"></i></a>
+                    <div class="d-flex flex-row question-container">
+                        <input class="form-control input-custom" placeholder="Question..." type="text">
+                    </div>
+
+                    <div>
+                        <div class="container answers" id="newAnswer">
+                            <div class="answer" id="answer" style="display: none;">
+                                <p class="answer-label">i)</p>
+                                <input class="form-control input-custom" placeholder="Multiple choice answer..." type="text">
+                                <a class="trash" onclick="trash(this)"><i class="bi bi-trash-fill"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <button class="btn btn-secondary add-answer" onclick="addAnswer(this)" type="button">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <button class="btn btn-secondary add-answer" onclick="addQuestion()" type="button">+</button>
+            </div>
+
+            <div class="container">
+                <button class="btn btn-primary" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <nav class="navbar-custom" th:replace="~{fragments/footer :: footer}"></nav>
 
 </body>
 </html>

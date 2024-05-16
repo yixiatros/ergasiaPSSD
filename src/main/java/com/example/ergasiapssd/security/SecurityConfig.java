@@ -32,6 +32,7 @@ public class SecurityConfig {
                             .requestMatchers("/index", "/", "/error/**").permitAll()
                             .requestMatchers("/users/logout").hasAnyAuthority("ROLE_ADMIN", "ROLE_STUDENT", "ROLE_TEACHER")
                             .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS") // restrict access to login/register page to loggedIn users
+                            .requestMatchers("/quizzes/create").hasAuthority("ROLE_TEACHER")
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(ses -> ses.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))

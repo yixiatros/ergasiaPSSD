@@ -15,6 +15,7 @@
     </style>
 </head>
 <body>
+
     <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
     <div class="container">
@@ -22,5 +23,8 @@
             Oops! Page Not Found.
         </h1>
     </div>
+
+    <nav class="navbar-custom" th:replace="~{fragments/footer :: footer}"></nav>
+
 </body>
 </html>

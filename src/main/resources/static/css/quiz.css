@@ -1,0 +1,51 @@
+@import url("colors.css");
+
+.question {
+    margin-top: 2em;
+    box-shadow: 2px 6px 10px 2px rgba(0,0,0,0.2);
+    border-radius: 0.5em;
+    min-height: 100px;
+}
+.question-container {
+    width: 100%;
+
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+.input-label-custom {
+    position: relative;
+    margin-top: 0.2em;
+    font-size: 1.5em;
+}
+.input-custom {
+    width: 90%;
+    height: 2em;
+}
+
+.answers {
+    margin-top: 2em;
+    margin-left: 2em;
+}
+.answer {
+    width: 80%;
+
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+.answer-label {
+    font-size: 1.5em;
+    margin-right: 0.5em;
+    margin-top: -0.1em;
+}
+.trash {
+    font-size: 1.5em;
+    margin-left: 0.5em;
+    margin-top: -0.01em;
+    color: var(--light-primary-color);
+}
+.trash:hover {
+    color: var(--color-surface-600);
+    cursor: pointer;
+}
