@@ -3,9 +3,14 @@ package com.example.ergasiapssd.quiz;
 import com.example.ergasiapssd.user.User;
 import com.example.ergasiapssd.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,6 +31,11 @@ public class QuizService {
         this.questionRepository = questionRepository;
         this.multipleChoiceRepository = multipleChoiceRepository;
         this.userRepository = userRepository;
+    }
+
+    public Page<Quiz> showMyQuizzes(int offset, int pageSize) {
+        Pageable sorted = PageRequest.of(offset, pageSize, Sort.by("title"));
+        return quizRepository.findQuizzesByUsername(SecurityContextHolder.getContext().getAuthentication().getName(), sorted);
     }
 
     public void createQuiz(Map<String,String> allRequestParams) {
@@ -67,5 +77,14 @@ public class QuizService {
             return;
 
         quizRepository.save(newQuiz);
+    }
+
+    public void deleteQuiz(Long id) {
+        boolean exists = quizRepository.existsById(id);
+
+        if(!exists)
+            throw new IllegalStateException("Quiz with id " + id + "does not exist.");
+
+        quizRepository.deleteById(id);
     }
 }

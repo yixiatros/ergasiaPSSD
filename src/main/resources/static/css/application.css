@@ -26,18 +26,30 @@ body {
     align-items: center;
     text-align: center;
 
-    color: #0a1415;
+    color: var(--background-color);
 
-    padding-top: 5em;
-    padding-bottom: 5em;
+    padding-top: 8em;
+    padding-bottom: 8em;
     background-image: url('/images/question_mark_pattern.png');
-    background-color: rgba(255, 255, 255, 0.1);
+    background-position-y: 150px;
+    background-color: rgba(0, 0, 0, 0.05);
     background-blend-mode: overlay;
     background-repeat: repeat;
-
 }
+/*.banner-shadow {
+    position: absolute;
+    width: 80%;
+    height: 35%;
+    min-width: 50em;
+    max-width: 65em;
+    max-height: 17rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+
+    box-shadow: 0.1rem 0.1rem 0.2rem 0.2rem rgba(0, 0, 0, 0.05);
+}*/
 .left-container {
-    margin-right: 1em;
+    margin-right: 0;
 }
 .right-container {
     margin-left: 1em;
@@ -107,6 +119,10 @@ body {
     }
 }
 
+.invisible-link {
+    text-decoration: none;
+}
+
 .footer-custom {
     margin-top: 2.5em;
     width: 100%;
@@ -119,7 +135,7 @@ body {
     padding-bottom: 1em;
 }
 .footer-custom a {
-    color: #0a1415;
+    color: var(--light-secondary-color);
 }
 .footer-custom a:hover {
     color: var(--primary-color);
