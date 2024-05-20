@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +32,10 @@ public class QuizService {
         this.questionRepository = questionRepository;
         this.multipleChoiceRepository = multipleChoiceRepository;
         this.userRepository = userRepository;
+    }
+
+    public Optional<Quiz> getById(Long id) {
+        return quizRepository.findById(id);
     }
 
     public Page<Quiz> showMyQuizzes(int offset, int pageSize) {
@@ -70,6 +75,9 @@ public class QuizService {
                         isQuestionAddedToQuiz = true;
                     }
                 }
+            } else if (entry.getKey().startsWith("radio")) {
+                if (newQuestion != null)
+                    newQuestion.setAnswer(Integer.parseInt(entry.getValue()));
             }
         }
 
@@ -79,12 +87,41 @@ public class QuizService {
         quizRepository.save(newQuiz);
     }
 
-    public void deleteQuiz(Long id) {
-        boolean exists = quizRepository.existsById(id);
+    public boolean deleteQuiz(Long id) {
+        Optional<Quiz> quizOptional = quizRepository.findById(id);
 
-        if(!exists)
+        if(quizOptional.isEmpty())
             throw new IllegalStateException("Quiz with id " + id + "does not exist.");
 
+        if (!quizOptional.get().getCreator().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName()) &&
+                quizOptional.get().getCreator().getRoles().contains("ROLE_ADMIN"))
+            return false;
+
         quizRepository.deleteById(id);
+        return true;
+    }
+
+    public int submitSolve(Map<String,String> allRequestParams, Long id) {
+        Optional<Quiz> quizOptional = quizRepository.findById(id);
+
+        if (quizOptional.isEmpty())
+            return -1;
+
+        Quiz quiz = quizOptional.get();
+
+        int score = 0;
+        int i = 0;
+
+        for (var entry : allRequestParams.entrySet()) {
+            String[] strings = entry.getValue().split(",");
+            if (Integer.parseInt(strings[0].split("= ")[1]) == quiz.getSortedQuestions().get(i).getAnswer())
+                score++;
+            i++;
+        }
+
+        quiz.addAnswer();
+        quizRepository.save(quiz);
+
+        return score;
     }
 }

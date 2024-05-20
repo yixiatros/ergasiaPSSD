@@ -83,3 +83,19 @@
     color: var(--background-color);
     text-decoration: none;
 }
+
+.solve-form {
+    display: block;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+}
+.solve-title {
+    margin-top: 2em;
+}
+.multiple-choices {
+    margin-top: 2em;
+}
+.multiple-choice {
+    margin-top: -1em;
+}

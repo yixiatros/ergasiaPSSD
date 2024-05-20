@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Builder
@@ -61,5 +60,13 @@ public class Question {
 
     public void addMultipleChoice(MultipleChoice multipleChoice) {
         this.multipleChoices.add(multipleChoice);
+    }
+
+    public List<MultipleChoice> getSortedMultipleChoices() {
+        List<MultipleChoice> items = new ArrayList<>(getMultipleChoices().stream().toList());
+
+        items.sort(Comparator.comparingLong(MultipleChoice::getId));
+
+        return items;
     }
 }

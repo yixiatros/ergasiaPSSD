@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -55,6 +55,9 @@ public class Quiz {
     public void setNumberOfAnswers(int numberOfAnswers) {
         this.numberOfAnswers = numberOfAnswers;
     }
+    public void addAnswer() {
+        this.numberOfAnswers++;
+    }
 
     public User getCreator() {
         return creator;
@@ -74,5 +77,13 @@ public class Quiz {
 
     public void addQuestion(Question question) {
         this.questions.add(question);
+    }
+
+    public List<Question> getSortedQuestions() {
+        List<Question> items = new ArrayList<>(getQuestions().stream().toList());
+
+        items.sort(Comparator.comparingLong(Question::getId));
+
+        return items;
     }
 }

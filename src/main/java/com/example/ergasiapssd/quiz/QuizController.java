@@ -1,16 +1,16 @@
 package com.example.ergasiapssd.quiz;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path = "quizzes")
@@ -35,7 +35,7 @@ public class QuizController {
         model.addAttribute("offset", offset);
         model.addAttribute("pageSize", pageSize);
 
-        return "quiz_show_my";
+        return "quiz/quiz_show_my";
     }
 
     @GetMapping(path = "/create")
@@ -43,7 +43,7 @@ public class QuizController {
 
         model.addAttribute("newQuiz", new Quiz());
 
-        return "quiz_create";
+        return "quiz/create";
     }
 
     @GetMapping(path = "/create/new")
@@ -59,5 +59,40 @@ public class QuizController {
         quizService.deleteQuiz(id);
 
         return new RedirectView("/quizzes/myQuizzes/0/20");
+    }
+
+    @GetMapping(path = "/solve/{quizId}")
+    public String solve(Model model, @PathVariable("quizId") Long id) {
+        Optional<Quiz> quizOptional = quizService.getById(id);
+
+        if (quizOptional.isEmpty()){
+            return "error/404";
+        }
+
+        model.addAttribute("quiz", quizOptional.get());
+
+        return "quiz/solve";
+    }
+
+    @PostMapping(path = "/solve/{quizId}")
+    public RedirectView submitSolve(@RequestParam Map<String,String> allRequestParams,
+                                    @PathVariable("quizId") Long id,
+                                    RedirectAttributes redirectAttributes) {
+
+        int score = quizService.submitSolve(allRequestParams, id);
+
+        if (score == -1) {
+            redirectAttributes.addFlashAttribute("error", "Something went wrong");
+            return new RedirectView("/index");
+        }
+
+        redirectAttributes.addFlashAttribute("score", score);
+
+        return new RedirectView("/quizzes/solve/score");
+    }
+
+    @GetMapping(path = "/solve/score")
+    public String result(Model model) {
+        return "quiz/result";
     }
 }

@@ -31,8 +31,9 @@ public class SecurityConfig {
                             .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/vendor/**", "/fonts/**").permitAll()
                             .requestMatchers("/index", "/", "/error/**").permitAll()
                             .requestMatchers("/users/logout").hasAnyAuthority("ROLE_ADMIN", "ROLE_STUDENT", "ROLE_TEACHER")
-                            .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS") // restrict access to login/register page to loggedIn users
-                            .requestMatchers("/quizzes/create").hasAuthority("ROLE_TEACHER")
+                            .requestMatchers("/quizzes/create", "/quizzes/myQuizzes").hasAuthority("ROLE_TEACHER")
+                            .requestMatchers("/quizzes/solve/*").hasAuthority("ROLE_STUDENT")
+                            .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS") // restrict access to login/register page for loggedIn users
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(ses -> ses.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
