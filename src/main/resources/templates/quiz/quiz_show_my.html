@@ -31,7 +31,7 @@
                 <td th:text="${myQuiz.getTitle()}">Title</td>
                 <td th:text="${myQuiz.getNumberOfAnswers()}">NoOfAnswers</td>
                 <td style="padding-top: 0.75em;">
-                    <a th:href="@{/quizzes/{quizId}(quizId=${myQuiz.getId()})/delete}" class="trash"><i class="bi bi-trash-fill"></i></a>
+                    <a th:href="@{'/quizzes/' + ${myQuiz.getId()} + '/delete'}" class="trash"><i class="bi bi-trash-fill"></i></a>
                 </td>
             </tr>
         </table>
@@ -50,7 +50,7 @@
                     <div class="dropdown">
                         <button class="btn dropdown-toggle dropdown-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${pageSize}"></button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="@{'/quizzes/myQuizzes/0/1'}">20</a></li>
+                            <li><a class="dropdown-item" th:href="@{'/quizzes/myQuizzes/0/20'}">20</a></li>
                             <li><a class="dropdown-item" th:href="@{'/quizzes/myQuizzes/0/50'}">50</a></li>
                             <li><a class="dropdown-item" th:href="@{'/quizzes/myQuizzes/0/100'}">100</a></li>
                         </ul>

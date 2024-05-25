@@ -95,4 +95,14 @@ public class QuizController {
     public String result(Model model) {
         return "quiz/result";
     }
+
+    @GetMapping(path = "/code")
+    public RedirectView codeEntered(@RequestParam("code") String code,
+                                    RedirectAttributes redirectAttributes) {
+        if (!quizService.checkCode(code)){
+            redirectAttributes.addFlashAttribute("invalidCode", "Invalid Code.");
+            return new RedirectView("/index#code-popup");
+        }
+        return new RedirectView("/quizzes/solve/" + code);
+    }
 }

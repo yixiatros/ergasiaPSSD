@@ -75,9 +75,24 @@
                         <i class="bi bi-award-fill" style="font-size: 5em;"></i>
                         <h1><b>Solve</b></h1>
                     </div>
-                    <a class="stretched-link invisible-link">&nbsp;</a>
+                    <a sec:authorize="hasAnyAuthority('ROLE_STUDENT', 'ROLE_ADMIN')" href="#code-popup" class="stretched-link invisible-link">&nbsp;</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/users/login}" class="stretched-link invisible-link">&nbsp;</a>
                 </div>
             </section>
+        </div>
+    </div>
+
+    <div id="code-popup" class="overlay" sec:authorize="isAuthenticated()">
+        <div class="popup">
+            <h2>Enter Quiz Code</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="popup-content">
+                <p class="alert alert-danger" th:if="${invalidCode}" th:text="${invalidCode}">Invalid Code.</p>
+                <form th:action="@{/quizzes/code}" method="get">
+                    <input type="number" class="form-control mb-4" name="code" id="code-input" maxlength="10" required>
+                    <button type="submit" class="btn btn-secondary">Solve</button>
+                </form>
+            </div>
         </div>
     </div>
 

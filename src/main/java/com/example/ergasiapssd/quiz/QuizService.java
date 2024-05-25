@@ -124,4 +124,8 @@ public class QuizService {
 
         return score;
     }
+
+    public boolean checkCode(String code) {
+        return quizRepository.existsById(Long.valueOf(code));
+    }
 }
