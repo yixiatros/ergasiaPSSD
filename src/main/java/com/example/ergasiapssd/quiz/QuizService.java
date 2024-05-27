@@ -1,7 +1,12 @@
 package com.example.ergasiapssd.quiz;
 
+import com.example.ergasiapssd.answer.Answer;
+import com.example.ergasiapssd.answer.AnswerRepository;
+import com.example.ergasiapssd.answer.QuestionResponse;
+import com.example.ergasiapssd.answer.QuestionResponseRepository;
 import com.example.ergasiapssd.user.User;
 import com.example.ergasiapssd.user.UserRepository;
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,10 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class QuizService {
@@ -22,25 +24,36 @@ public class QuizService {
     private final MultipleChoiceRepository multipleChoiceRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final AnswerRepository answerRepository;
+    private final QuestionResponseRepository questionResponseRepository;
 
     @Autowired
     public QuizService(QuizRepository quizRepository,
                        QuestionRepository questionRepository,
                        MultipleChoiceRepository multipleChoiceRepository,
-                       UserRepository userRepository){
+                       UserRepository userRepository,
+                       AnswerRepository answerRepository,
+                       QuestionResponseRepository questionResponseRepository){
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
         this.multipleChoiceRepository = multipleChoiceRepository;
         this.userRepository = userRepository;
+        this.answerRepository = answerRepository;
+        this.questionResponseRepository = questionResponseRepository;
     }
 
-    public Optional<Quiz> getById(Long id) {
+    public Optional<Quiz> getById(UUID id) {
         return quizRepository.findById(id);
     }
 
     public Page<Quiz> showMyQuizzes(int offset, int pageSize) {
         Pageable sorted = PageRequest.of(offset, pageSize, Sort.by("title"));
         return quizRepository.findQuizzesByUsername(SecurityContextHolder.getContext().getAuthentication().getName(), sorted);
+    }
+
+    public Page<Answer> answersOfQuizWithId(UUID quizId, int offset, int pageSize) {
+        Pageable sorted = PageRequest.of(offset, pageSize, Sort.by("id"));
+        return answerRepository.findAnswersByQuizId(quizId, sorted);
     }
 
     public void createQuiz(Map<String,String> allRequestParams) {
@@ -87,7 +100,7 @@ public class QuizService {
         quizRepository.save(newQuiz);
     }
 
-    public boolean deleteQuiz(Long id) {
+    public boolean deleteQuiz(UUID id) {
         Optional<Quiz> quizOptional = quizRepository.findById(id);
 
         if(quizOptional.isEmpty())
@@ -101,31 +114,59 @@ public class QuizService {
         return true;
     }
 
-    public int submitSolve(Map<String,String> allRequestParams, Long id) {
+    public Pair<Integer, Integer> submitSolve(Map<String,String> allRequestParams, UUID id) {
         Optional<Quiz> quizOptional = quizRepository.findById(id);
+        Optional<User> userOptional = userRepository.findUserByUsername(
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        );
 
-        if (quizOptional.isEmpty())
-            return -1;
+        if (quizOptional.isEmpty() || userOptional.isEmpty())
+            return new Pair<>(-1, -1);
 
         Quiz quiz = quizOptional.get();
+
+        Answer answer = new Answer();
 
         int score = 0;
         int i = 0;
 
         for (var entry : allRequestParams.entrySet()) {
-            String[] strings = entry.getValue().split(",");
-            if (Integer.parseInt(strings[0].split("= ")[1]) == quiz.getSortedQuestions().get(i).getAnswer())
+            QuestionResponse questionResponse = new QuestionResponse();
+            int an = Integer.parseInt(entry.getValue().split(",")[0].split("= ")[1]);
+
+            if (an == quiz.getSortedQuestions().get(i).getAnswer())
                 score++;
+
+            questionResponse.setResponse(an);
+            Optional<Question> questionOptional = questionRepository.findById(Long.valueOf(entry.getKey()));
+            questionOptional.ifPresent(questionResponse::setQuestion);
+            questionResponseRepository.save(questionResponse);
+            answer.addQuestionResponse(questionResponse);
+
             i++;
         }
 
-        quiz.addAnswer();
+        answer.setUser(userOptional.get());
+        answer.setScore(score);
+        answerRepository.save(answer);
+        quiz.getAnswers().add(answer);
         quizRepository.save(quiz);
 
-        return score;
+        return new Pair<>(score, allRequestParams.size());
     }
 
     public boolean checkCode(String code) {
-        return quizRepository.existsById(Long.valueOf(code));
+        return quizRepository.existsById(UUID.fromString(code));
+    }
+
+    public void lockUnlock(UUID quizId) {
+        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
+
+        if (quizOptional.isEmpty())
+            return;
+
+        Quiz quiz = quizOptional.get();
+        quiz.setClosed(!quiz.isClosed());
+        quizRepository.save(quiz);
     }
 }

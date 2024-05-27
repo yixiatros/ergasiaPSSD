@@ -60,6 +60,9 @@
     background-color: rgba(0, 0, 0, 0);
     color: var(--light-primary-color);
 }
+.table-custom-pointer-tr {
+    cursor: pointer;
+}
 
 .dropdown-button {
     color: var(--light-primary-color);
@@ -98,4 +101,22 @@
 }
 .multiple-choice {
     margin-top: -1em;
+}
+
+.results-container {
+    margin-top: 12em;
+    margin-bottom: 12em;
+    height: 10em;
+    max-width: 30em;
+
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 1em;
+
+    display: grid;
+    place-content: center;
+}
+.score {
+    display: flex;
+    text-align: center;
+    justify-content: center;
 }

@@ -89,7 +89,7 @@
             <div class="popup-content">
                 <p class="alert alert-danger" th:if="${invalidCode}" th:text="${invalidCode}">Invalid Code.</p>
                 <form th:action="@{/quizzes/code}" method="get">
-                    <input type="number" class="form-control mb-4" name="code" id="code-input" maxlength="10" required>
+                    <input type="text" class="form-control mb-4" name="code" id="code-input" maxlength="45" required>
                     <button type="submit" class="btn btn-secondary">Solve</button>
                 </form>
             </div>

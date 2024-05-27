@@ -18,7 +18,11 @@
 
   <nav class="navbar-custom" th:replace="~{fragments/navbar :: navbar}"></nav>
 
-  <div class="h-100 d-flex align-items-center justify-content-center">
+  <div th:if="${quiz.isClosed()}" class="alert alert-danger" role="alert">
+    <p>The creator of this quiz has disabled submissions.</p>
+  </div>
+
+  <div th:if="${!quiz.isClosed()}" class="h-100 d-flex align-items-center justify-content-center">
     <form class="solve-form" th:action="@{'/quizzes/solve/' + ${quiz.getId()}}" method="post">
       <h1 class="solve-title" th:text="${quiz.getTitle()}">Title</h1>
 

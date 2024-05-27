@@ -15,8 +15,24 @@
 
 </head>
 <body>
-    <div th:if="${score}" class="alert alert-danger" role="alert">
-        <p th:text="${score}">0/10</p>
+
+    <nav class="navbar-custom" th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container results-container">
+        <div style="display: inline-flex">
+            <h4 th:text="${quiz.title}">Quiz Title</h4>
+            &nbsp;
+            <h6 th:text="'(' + ${quiz.creator.username} + ')'">(Creator)</h6>
+        </div>
+        <h4> Your Score Is:</h4>
+        <div class="score">
+            <h1 th:text="${results.a}">5</h1>
+            <h1>/</h1>
+            <h1 th:text="${results.b}">10</h1>
+        </div>
     </div>
+
+    <footer class="navbar-custom" th:replace="~{fragments/footer :: footer}"></footer>
+
 </body>
 </html>

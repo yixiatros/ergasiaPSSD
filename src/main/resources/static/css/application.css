@@ -31,7 +31,9 @@ body {
     padding-top: 8em;
     padding-bottom: 8em;
     background-image: url('/images/question_mark_pattern.png');
-    background-position-y: 150px;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
     background-color: rgba(0, 0, 0, 0.05);
     background-blend-mode: overlay;
     background-repeat: repeat;
