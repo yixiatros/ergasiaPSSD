@@ -13,6 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../../static/css/application.css"/>
     <link rel="stylesheet" th:href="@{/css/quiz.css}" href="../../static/css/quiz.css"/>
 
+    <script type="text/javascript" src="../../static/js/quiz.js" th:src="@{/js/quiz.js}"></script>
 </head>
 <body>
 
@@ -22,26 +23,25 @@
         <table class="table table-hover table-custom">
             <tr>
                 <th scope="col">#</th>
-                <th>Code</th>
-                <th scope="col">Title</th>
+                <th scope="col">Code</th>
+                <th scope="col" style="width: 40%;">Title</th>
                 <th scope="col">No of Answers</th>
-                <th scope="col">Lock/Unlock</th>
-                <th scope="col">Delete</th>
+                <th scope="col"></th>
             </tr>
             <tr th:each="myQuiz, i: ${myQuizzes}"
                 th:data-url="@{'/quizzes/myQuizzes/' + ${myQuiz.getId()} + '/answers/0/20'}"
                 onclick="onTableRowClick(this.getAttribute('data-url'))"
                 class="table-custom-pointer-tr">
                 <td th:text="${i.index + offset * pageSize}">1</td>
-                <td th:text="${myQuiz.getId()}">Code</td>
+                <td th:data-id="${myQuiz.getId()}" th:text="${myQuiz.getId()}" onclick="onQuizIdClick(this.getAttribute('data-id'))" class="code">Code</td>
                 <td th:text="${myQuiz.getTitle()}">Title</td>
                 <td th:text="${myQuiz.getAnswers().size()}"></td>
                 <td style="padding-top: 0.75em;">
-                    <a th:if="${!myQuiz.isClosed()}" th:href="@{'/quizzes/myQuizzes/' + ${myQuiz.getId()} + '/lock/' + ${offset} + '/' + ${pageSize}}" class="trash"><i class="bi bi-unlock-fill"></i></a>
-                    <a th:if="${myQuiz.isClosed()}" th:href="@{'/quizzes/myQuizzes/' + ${myQuiz.getId()} + '/lock/' + ${offset} + '/' + ${pageSize}}" class="trash"><i class="bi bi-lock-fill"></i></a>
-                </td>
-                <td style="padding-top: 0.75em;">
-                    <a th:href="@{'/quizzes/' + ${myQuiz.getId()} + '/delete'}" class="trash"><i class="bi bi-trash-fill"></i></a>
+                    <a th:href="@{'/quizzes/myQuizzes/' + ${myQuiz.getId()} + '/share'}" class="icon_link"><i class="bi bi-share-fill"></i></a>
+                    <a th:href="@{'/quizzes/' + ${myQuiz.getId()} + '/edit'}" class="icon_link"><i class="bi bi-pencil-square"></i></a>
+                    <a th:if="${!myQuiz.isClosed()}" th:href="@{'/quizzes/myQuizzes/' + ${myQuiz.getId()} + '/lock/' + ${offset} + '/' + ${pageSize}}" class="icon_link"><i class="bi bi-unlock-fill"></i></a>
+                    <a th:if="${myQuiz.isClosed()}" th:href="@{'/quizzes/myQuizzes/' + ${myQuiz.getId()} + '/lock/' + ${offset} + '/' + ${pageSize}}" class="icon_link"><i class="bi bi-lock-fill"></i></a>
+                    <a th:href="@{'/quizzes/' + ${myQuiz.getId()} + '/delete'}" class="icon_link"><i class="bi bi-trash-fill"></i></a>
                 </td>
             </tr>
         </table>
@@ -72,12 +72,6 @@
     </div>
 
     <footer class="navbar-custom" th:replace="~{fragments/footer :: footer}"></footer>
-
-    <script>
-        function onTableRowClick(value) {
-            location.href = value;
-        }
-    </script>
 
 </body>
 </html>

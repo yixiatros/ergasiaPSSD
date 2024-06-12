@@ -46,6 +46,25 @@ public class QuizService {
         return quizRepository.findById(id);
     }
 
+    public List<Answer> getAnswersOfUserToQuiz(String username, UUID quizId) {
+        Optional<User> userOptional = userRepository.findUserByUsername(username);
+
+        if (userOptional.isEmpty())
+            return List.of();
+
+        return answerRepository.getAnswersOfUserToQuizByIds(userOptional.get().getId(), quizId);
+    }
+
+    public List<User> getUsersByRole(String role, String search){
+        if (search == null || search.equals(""))
+            return userRepository.findAllUsersByRole(role);
+
+        return userRepository.findAllUsersByRoleAndSearch(role, search);
+    }
+    public List<User> getUsersByRole(String role) {
+        return getUsersByRole(role, "");
+    }
+
     public Page<Quiz> showMyQuizzes(int offset, int pageSize) {
         Pageable sorted = PageRequest.of(offset, pageSize, Sort.by("title"));
         return quizRepository.findQuizzesByUsername(SecurityContextHolder.getContext().getAuthentication().getName(), sorted);
@@ -66,38 +85,7 @@ public class QuizService {
 
         newQuiz.setCreator(userOptional.get());
 
-        Question newQuestion = null;
-        boolean isQuestionAddedToQuiz = false;
-
-        for (var entry : allRequestParams.entrySet()) {
-            if (entry.getKey().equals("title")){
-                newQuiz.setTitle(entry.getValue());
-            } else if (entry.getKey().startsWith("question")){
-                isQuestionAddedToQuiz = false;
-                newQuestion = new Question();
-                newQuestion.setQuestion(entry.getValue());
-            } else if (entry.getKey().startsWith("answer")) {
-                MultipleChoice multipleChoice = new MultipleChoice();
-                multipleChoice.setChoice(entry.getValue());
-                if (newQuestion != null){
-                    multipleChoiceRepository.save(multipleChoice);
-                    newQuestion.addMultipleChoice(multipleChoice);
-                    questionRepository.save(newQuestion);
-                    if (!isQuestionAddedToQuiz){
-                        newQuiz.addQuestion(newQuestion);
-                        isQuestionAddedToQuiz = true;
-                    }
-                }
-            } else if (entry.getKey().startsWith("radio")) {
-                if (newQuestion != null)
-                    newQuestion.setAnswer(Integer.parseInt(entry.getValue()));
-            }
-        }
-
-        if (newQuiz.getQuestions().size() == 0)
-            return;
-
-        quizRepository.save(newQuiz);
+        setQuizFromParams(allRequestParams, newQuiz);
     }
 
     public boolean deleteQuiz(UUID id) {
@@ -112,6 +100,68 @@ public class QuizService {
 
         quizRepository.deleteById(id);
         return true;
+    }
+
+    public boolean editView(UUID id) {
+        Optional<Quiz> quizOptional = getById(id);
+        Optional<User> userOptional = userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (quizOptional.isEmpty() || userOptional.isEmpty())
+            return false;
+
+        if (quizOptional.get().getCreator().getId() == userOptional.get().getId())
+            return false;
+
+        return true;
+    }
+
+    public void edit(UUID id, Map<String,String> allRequestParams) {
+        Optional<Quiz> quizOptional = quizRepository.findById(id);
+        Optional<User> userOptional = userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (userOptional.isEmpty() || quizOptional.isEmpty())
+            return;
+
+        Quiz quiz = quizOptional.get();
+        quiz.setQuestions(new HashSet<>());
+
+        setQuizFromParams(allRequestParams, quiz);
+    }
+
+    private void setQuizFromParams(Map<String, String> allRequestParams, Quiz quiz) {
+        Question newQuestion = null;
+        boolean isQuestionAddedToQuiz = false;
+
+        for (var entry : allRequestParams.entrySet()) {
+            if (entry.getKey().equals("title")){
+                quiz.setTitle(entry.getValue());
+            } else if (entry.getKey().startsWith("question")){
+                isQuestionAddedToQuiz = false;
+
+                newQuestion = new Question();
+                newQuestion.setQuestion(entry.getValue());
+            } else if (entry.getKey().startsWith("answer")) {
+                MultipleChoice multipleChoice = new MultipleChoice();
+                multipleChoice.setChoice(entry.getValue());
+                if (newQuestion != null){
+                    multipleChoiceRepository.save(multipleChoice);
+                    newQuestion.addMultipleChoice(multipleChoice);
+                    questionRepository.save(newQuestion);
+                    if (!isQuestionAddedToQuiz){
+                        quiz.addQuestion(newQuestion);
+                        isQuestionAddedToQuiz = true;
+                    }
+                }
+            } else if (entry.getKey().startsWith("radio")) {
+                if (newQuestion != null)
+                    newQuestion.setAnswer(Integer.parseInt(entry.getValue()));
+            }
+        }
+
+        if (quiz.getQuestions().size() == 0)
+            return;
+
+        quizRepository.save(quiz);
     }
 
     public Pair<Integer, Integer> submitSolve(Map<String,String> allRequestParams, UUID id) {
@@ -168,5 +218,26 @@ public class QuizService {
         Quiz quiz = quizOptional.get();
         quiz.setClosed(!quiz.isClosed());
         quizRepository.save(quiz);
+    }
+
+    public void shareQuiz(UUID quizId, Long userId) {
+        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (quizOptional.isEmpty() || userOptional.isEmpty())
+            return;
+
+        Quiz quiz = quizOptional.get();
+        quiz.getVisibleUsers().add(userOptional.get());
+        quizRepository.save(quiz);
+    }
+
+    public List<Quiz> getAvailableQuizzes() {
+        Optional<User> userOptional = userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (userOptional.isEmpty())
+            return List.of();
+
+        return quizRepository.findAllAvailableQuizzesOfUserById(userOptional.get().getId());
     }
 }

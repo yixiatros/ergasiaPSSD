@@ -4,6 +4,7 @@ import com.example.ergasiapssd.answer.Answer;
 import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -47,8 +48,10 @@ public class QuizController {
                                       @PathVariable("offset") int offset,
                                       @PathVariable("pageSize") int pageSize) {
 
+        Optional<Quiz> quizOptional = quizService.getById(id);
         Page<Answer> page = quizService.answersOfQuizWithId(id, offset, pageSize);
         List<Answer> answers = page.getContent();
+        quizOptional.ifPresent(quiz -> model.addAttribute("quiz", quiz));
         model.addAttribute("answers", answers);
         model.addAttribute("page", page);
         model.addAttribute("offset", offset);
@@ -80,6 +83,26 @@ public class QuizController {
         return new RedirectView("/quizzes/myQuizzes/0/20");
     }
 
+    @GetMapping(path = "/{quizId}/edit")
+    public String editView(@PathVariable("quizId") UUID id, Model model) {
+        Optional<Quiz> quizOptional = quizService.getById(id);
+
+        if (quizService.editView(id) || quizOptional.isEmpty())
+            return "redirect:/quizzes/myQuizzes/0/20";
+
+        model.addAttribute("quiz", quizOptional.get());
+
+        return "quiz/edit";
+    }
+
+    @GetMapping(path = "/{quizId}/editing")
+    public RedirectView edit(@PathVariable("quizId") UUID id, @RequestParam Map<String,String> allRequestParams) {
+
+        quizService.edit(id, allRequestParams);
+
+        return new RedirectView("/quizzes/myQuizzes/0/20");
+    }
+
     @GetMapping(path = "/solve/{quizId}")
     public String solve(Model model, @PathVariable("quizId") UUID id) {
         Optional<Quiz> quizOptional = quizService.getById(id);
@@ -89,6 +112,11 @@ public class QuizController {
         }
 
         model.addAttribute("quiz", quizOptional.get());
+
+        List<Answer> answers = quizService.getAnswersOfUserToQuiz(
+                SecurityContextHolder.getContext().getAuthentication().getName(), id);
+
+        model.addAttribute("answers", answers);
 
         return "quiz/solve";
     }
@@ -136,5 +164,33 @@ public class QuizController {
         quizService.lockUnlock(quizId);
 
         return new RedirectView("/quizzes/myQuizzes/" + offset + "/" + pageSize);
+    }
+
+    @GetMapping(path = "/myQuizzes/{quizId}/share")
+    public String shareQuiz(@PathVariable("quizId") UUID quizId,
+                            @RequestParam(name = "search", defaultValue = "") String search,
+                            Model model) {
+
+        model.addAttribute("students", quizService.getUsersByRole("ROLE_STUDENT", search));
+        model.addAttribute("quizId", quizId);
+
+        return "quiz/share";
+    }
+
+    @GetMapping(path = "/myQuizzes/{quizId}/share/{userId}")
+    public RedirectView shareQuizUser(@PathVariable("quizId") UUID quizId,
+                                      @PathVariable("userId") Long userId) {
+
+        quizService.shareQuiz(quizId, userId);
+
+        return new RedirectView("/quizzes/myQuizzes/" + quizId + "/share");
+    }
+
+    @GetMapping(path = "/availableQuizzes")
+    public String availableQuizzes(Model model) {
+
+        model.addAttribute("availableQuizzes", quizService.getAvailableQuizzes());
+
+        return "quiz/available_quizzes";
     }
 }

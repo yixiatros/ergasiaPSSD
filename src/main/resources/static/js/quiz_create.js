@@ -44,6 +44,7 @@ function addAnswer(e) {
     answerCounter += 1;
 
     // editNumberingOfAnswer(newEl.parentNode);
+    return answer;
 }
 
 function editNumberingOfAnswer(el) {
@@ -70,4 +71,6 @@ function addQuestion() {
     question.required = true;
 
     questionCounter += 1;
+
+    return question;
 }

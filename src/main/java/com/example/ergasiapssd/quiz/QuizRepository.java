@@ -17,4 +17,7 @@ public interface QuizRepository extends JpaRepository<Quiz, UUID> {
 
     @Query("SELECT q FROM Quiz q WHERE q.creator.username = ?1")
     Page<Quiz> findQuizzesByUsername (String username, Pageable pageable);
+
+    @Query("SELECT q FROM Quiz q, User u WHERE u.id = ?1 AND (u MEMBER q.visibleUsers)")
+    List<Quiz> findAllAvailableQuizzesOfUserById (Long userId);
 }

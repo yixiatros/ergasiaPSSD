@@ -50,6 +50,15 @@ public class Quiz {
                     name = "answer_id", referencedColumnName = "id"))
     private Set<Answer> answers = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "quizzes_availability",
+            joinColumns = @JoinColumn(
+                    name = "quiz_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"))
+    private Set<User> visibleUsers = new HashSet<>();
+
 
     public void addQuestion(Question question) {
         this.questions.add(question);

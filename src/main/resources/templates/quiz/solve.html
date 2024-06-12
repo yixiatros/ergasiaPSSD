@@ -18,11 +18,12 @@
 
   <nav class="navbar-custom" th:replace="~{fragments/navbar :: navbar}"></nav>
 
-  <div th:if="${quiz.isClosed()}" class="alert alert-danger" role="alert">
-    <p>The creator of this quiz has disabled submissions.</p>
+  <div th:if="${quiz.isClosed() || answers.size() > 0}" class="alert alert-danger" role="alert" style="margin-bottom: 40em">
+    <p th:if="${quiz.isClosed()}">The creator of this quiz has disabled submissions.</p>
+    <p th:if="${answers.size() > 0}">You have already answered this quiz.</p>
   </div>
 
-  <div th:if="${!quiz.isClosed()}" class="h-100 d-flex align-items-center justify-content-center">
+  <div th:if="${!quiz.isClosed() && answers.size() == 0}" class="h-100 d-flex align-items-center justify-content-center">
     <form class="solve-form" th:action="@{'/quizzes/solve/' + ${quiz.getId()}}" method="post">
       <h1 class="solve-title" th:text="${quiz.getTitle()}">Title</h1>
 
