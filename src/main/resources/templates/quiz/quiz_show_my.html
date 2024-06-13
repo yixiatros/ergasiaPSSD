@@ -14,9 +14,11 @@
     <link rel="stylesheet" th:href="@{/css/quiz.css}" href="../../static/css/quiz.css"/>
 
     <script type="text/javascript" src="../../static/js/quiz.js" th:src="@{/js/quiz.js}"></script>
+    <script type="text/javascript" src="../../static/js/application.js" th:src="@{/js/application.js}"></script>
 </head>
 <body>
 
+    <div th:replace="~{fragments/navbar :: alerts}"></div>
     <nav class="navbar-custom" th:replace="~{fragments/navbar :: navbar}"></nav>
 
     <div class="container">

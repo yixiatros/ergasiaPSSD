@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:x-transition="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Answer Review</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" th:href="@{/css/application.css}" href="../../static/css/application.css"/>
+    <link rel="stylesheet" th:href="@{/css/quiz.css}" href="../../static/css/quiz.css"/>
+
+</head>
+<body>
+
+    <nav class="navbar-custom" th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <div class="solve-form">
+            <h1 class="solve-title" th:text="${quiz.getTitle()}">Title</h1>
+
+            <div class="multiple-choices container" th:each="question, i: ${answer.getSortedQuestionResponse()}">
+                <h4 th:text="'Question: ' + ${question.getQuestion().getQuestion()}">Question Name</h4>
+                <div class="form-check multiple-choice container">
+                    <p class="form-check-label multiple-choice-label" th:text="'Answer: ' + ${question.getQuestion().getSortedMultipleChoices().get(question.getResponse()).getChoice()}">choice</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="navbar-custom" th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

@@ -24,6 +24,7 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Title</th>
+        <th scope="col">Teacher</th>
       </tr>
       <tr th:each="quiz, i: ${availableQuizzes}"
           th:data-url="@{'/quizzes/solve/' + ${quiz.getId()}}"
@@ -31,6 +32,7 @@
           class="table-custom-pointer-tr">
         <td th:text="${i.index}">1</td>
         <td th:text="${quiz.getTitle()}">Title</td>
+        <td th:text="${quiz.getCreator().getUsername()}">Teacher</td>
       </tr>
     </table>
   </div>

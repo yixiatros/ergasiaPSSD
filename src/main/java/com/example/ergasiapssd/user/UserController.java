@@ -85,10 +85,13 @@ public class UserController {
 
     @PostMapping(path = "/logout")
     public RedirectView logout(Model model,
+                         RedirectAttributes redirectAttributes,
                          HttpServletRequest request,
                          HttpServletResponse response) {
 
         userService.logout(request, response);
+
+        redirectAttributes.addFlashAttribute("info", "Logged out Successfully.");
 
         return new RedirectView("/index");
     }

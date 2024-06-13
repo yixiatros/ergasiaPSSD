@@ -10,11 +10,28 @@
 
   <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
 
+  <script type="text/javascript" src="../../static/js/application.js" th:src="@{/js/application.js}"></script>
 </head>
 <body>
+
+  <div th:fragment="alerts" id="alerts">
+    <div th:if="${info}" class="alert alert-info" role="alert">
+      <p th:text="${info}">This is a warning alert—check it out!</p>
+    </div>
+    <div th:if="${success}" class="alert alert-success" role="alert">
+      <p th:text="${success}">This is a warning alert—check it out!</p>
+    </div>
+    <div th:if="${danger}" class="alert alert-danger" role="alert">
+      <p th:text="${danger}">This is a warning alert—check it out!</p>
+    </div>
+    <div th:if="${warning}" class="alert alert-warning" role="alert">
+      <p th:text="${warning}">This is a warning alert—check it out!</p>
+    </div>
+  </div>
+
   <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/index}">TestNavbar</a>
+      <a class="navbar-brand" th:href="@{/index}">QuizMaster</a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -52,5 +69,6 @@
       </div>
     </div>
   </nav>
+
 </body>
 </html>

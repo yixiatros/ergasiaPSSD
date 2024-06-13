@@ -13,6 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../../static/css/application.css"/>
     <link rel="stylesheet" th:href="@{/css/quiz.css}" href="../../static/css/quiz.css"/>
 
+    <script type="text/javascript" src="../../static/js/quiz.js" th:src="@{/js/quiz.js}"></script>
 </head>
 <body>
 
@@ -32,7 +33,10 @@
                 <th>Username</th>
                 <th>Score</th>
             </tr>
-            <tr th:each="answer, i: ${answers}">
+            <tr th:each="answer, i: ${answers}"
+                th:data-url="@{'/answers/' + ${quiz.getId()} + '/' + ${answer.getId()}}"
+                onclick="onTableRowClick(this.getAttribute('data-url'))"
+                class="table-custom-pointer-tr">
                 <td th:text="${i.index + offset * pageSize}">1</td>
                 <td th:text="${answer.getUser().getUsername()}">Username</td>
                 <td th:text="${answer.getScore()}">Score</td>

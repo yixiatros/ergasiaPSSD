@@ -23,8 +23,4 @@ public class QuestionResponse {
     private Question question;
 
     private int response;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
 }

@@ -9,8 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Builder
@@ -27,7 +26,13 @@ public class Answer {
     @ManyToOne
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "answer", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "answers_responses",
+            joinColumns = @JoinColumn(
+                    name = "answer_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "response_id", referencedColumnName = "id"))
     private Set<QuestionResponse> responses = new HashSet<>();
 
     private float score;
@@ -37,4 +42,11 @@ public class Answer {
         this.responses.add(questionResponse);
     }
 
+    public List<QuestionResponse> getSortedQuestionResponse() {
+        List<QuestionResponse> items = new ArrayList<>(getResponses().stream().toList());
+
+        items.sort(Comparator.comparingLong(QuestionResponse::getId));
+
+        return items;
+    }
 }

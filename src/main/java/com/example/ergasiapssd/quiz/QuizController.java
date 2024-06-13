@@ -69,16 +69,21 @@ public class QuizController {
     }
 
     @GetMapping(path = "/create/new")
-    public RedirectView createNewQuiz(@RequestParam Map<String,String> allRequestParams) {
+    public RedirectView createNewQuiz(@RequestParam Map<String,String> allRequestParams, RedirectAttributes redirectAttributes) {
 
-        quizService.createQuiz(allRequestParams);
+        if (quizService.createQuiz(allRequestParams))
+            redirectAttributes.addFlashAttribute("success", "Quiz was created Successfully!");
+        else
+            redirectAttributes.addFlashAttribute("danger", "Quiz was not created. Something went wrong.");
 
         return new RedirectView("/index");
     }
 
     @GetMapping(path = "/{quizId}/delete")
-    public RedirectView delete(@PathVariable("quizId") UUID id) {
-        quizService.deleteQuiz(id);
+    public RedirectView delete(@PathVariable("quizId") UUID id, RedirectAttributes redirectAttributes) {
+        Pair<String, String> alert = quizService.deleteQuiz(id);
+
+        redirectAttributes.addFlashAttribute(alert.a, alert.b);
 
         return new RedirectView("/quizzes/myQuizzes/0/20");
     }
@@ -149,19 +154,23 @@ public class QuizController {
     @GetMapping(path = "/code")
     public RedirectView codeEntered(@RequestParam("code") String code,
                                     RedirectAttributes redirectAttributes) {
+
         if (!quizService.checkCode(code)){
             redirectAttributes.addFlashAttribute("invalidCode", "Invalid Code.");
             return new RedirectView("/index#code-popup");
         }
+
         return new RedirectView("/quizzes/solve/" + code);
     }
 
     @GetMapping(path = "/myQuizzes/{quizId}/lock/{offset}/{pageSize}")
     public RedirectView lockUnlock(@PathVariable("quizId") UUID quizId,
                                    @PathVariable("offset") int offset,
-                                   @PathVariable("pageSize") int pageSize) {
+                                   @PathVariable("pageSize") int pageSize,
+                                   RedirectAttributes redirectAttributes) {
 
-        quizService.lockUnlock(quizId);
+        Pair<String, String> alert = quizService.lockUnlock(quizId);
+        redirectAttributes.addFlashAttribute(alert.a, alert.b);
 
         return new RedirectView("/quizzes/myQuizzes/" + offset + "/" + pageSize);
     }
@@ -179,9 +188,13 @@ public class QuizController {
 
     @GetMapping(path = "/myQuizzes/{quizId}/share/{userId}")
     public RedirectView shareQuizUser(@PathVariable("quizId") UUID quizId,
-                                      @PathVariable("userId") Long userId) {
+                                      @PathVariable("userId") Long userId,
+                                      RedirectAttributes redirectAttributes) {
 
-        quizService.shareQuiz(quizId, userId);
+        if (!quizService.shareQuiz(quizId, userId))
+            redirectAttributes.addFlashAttribute("danger", "User not found. Quiz was not shared.");
+        else
+            redirectAttributes.addFlashAttribute("success", "You have Successfully shared the quiz with the user.");
 
         return new RedirectView("/quizzes/myQuizzes/" + quizId + "/share");
     }

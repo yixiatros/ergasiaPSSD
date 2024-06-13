@@ -75,31 +75,34 @@ public class QuizService {
         return answerRepository.findAnswersByQuizId(quizId, sorted);
     }
 
-    public void createQuiz(Map<String,String> allRequestParams) {
+    public boolean createQuiz(Map<String,String> allRequestParams) {
 
         Quiz newQuiz = new Quiz();
 
         Optional<User> userOptional = userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (userOptional.isEmpty())
-            return;
+            return false;
 
         newQuiz.setCreator(userOptional.get());
 
-        setQuizFromParams(allRequestParams, newQuiz);
+        if (setQuizFromParams(allRequestParams, newQuiz))
+            return false;
+
+        return true;
     }
 
-    public boolean deleteQuiz(UUID id) {
+    public Pair<String, String> deleteQuiz(UUID id) {
         Optional<Quiz> quizOptional = quizRepository.findById(id);
 
         if(quizOptional.isEmpty())
-            throw new IllegalStateException("Quiz with id " + id + "does not exist.");
+            return new Pair<>("danger", "Quiz with id " + id + "does not exist.");
 
         if (!quizOptional.get().getCreator().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName()) &&
                 quizOptional.get().getCreator().getRoles().contains("ROLE_ADMIN"))
-            return false;
+            return new Pair<>("danger", "You are not authorized to do this action.");
 
         quizRepository.deleteById(id);
-        return true;
+        return new Pair<>("warning", "The quiz has been deleted.");
     }
 
     public boolean editView(UUID id) {
@@ -128,7 +131,7 @@ public class QuizService {
         setQuizFromParams(allRequestParams, quiz);
     }
 
-    private void setQuizFromParams(Map<String, String> allRequestParams, Quiz quiz) {
+    private boolean setQuizFromParams(Map<String, String> allRequestParams, Quiz quiz) {
         Question newQuestion = null;
         boolean isQuestionAddedToQuiz = false;
 
@@ -159,9 +162,10 @@ public class QuizService {
         }
 
         if (quiz.getQuestions().size() == 0)
-            return;
+            return false;
 
         quizRepository.save(quiz);
+        return true;
     }
 
     public Pair<Integer, Integer> submitSolve(Map<String,String> allRequestParams, UUID id) {
@@ -209,27 +213,34 @@ public class QuizService {
         return quizRepository.existsById(UUID.fromString(code));
     }
 
-    public void lockUnlock(UUID quizId) {
+    public Pair<String, String> lockUnlock(UUID quizId) {
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
 
         if (quizOptional.isEmpty())
-            return;
+            return new Pair<>("danger", "Something went wrong. The quiz was not found.");
 
         Quiz quiz = quizOptional.get();
         quiz.setClosed(!quiz.isClosed());
         quizRepository.save(quiz);
+
+        if (quiz.isClosed())
+            return new Pair<>("success", "The quiz has been CLOSED successfully.");
+        else
+            return new Pair<>("success", "The quiz has been OPENED successfully.");
     }
 
-    public void shareQuiz(UUID quizId, Long userId) {
+    public boolean shareQuiz(UUID quizId, Long userId) {
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (quizOptional.isEmpty() || userOptional.isEmpty())
-            return;
+            return false;
 
         Quiz quiz = quizOptional.get();
         quiz.getVisibleUsers().add(userOptional.get());
         quizRepository.save(quiz);
+
+        return true;
     }
 
     public List<Quiz> getAvailableQuizzes() {
