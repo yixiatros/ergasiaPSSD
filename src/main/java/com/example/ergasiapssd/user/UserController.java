@@ -1,5 +1,6 @@
 package com.example.ergasiapssd.user;
 
+import com.example.ergasiapssd.GreekToEnglish;
 import com.example.ergasiapssd.security.auth.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,7 +46,7 @@ public class UserController {
         if (term.equals(""))
             students = userService.getStudentsUsernames();
         else
-            students = userService.getStudentsUsernames(term);
+            students = userService.getStudentsUsernames(GreekToEnglish.convert(term));
 
         return students;
     }
