@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,8 +32,22 @@ public class UserController {
     }
 
     @GetMapping
+    @ResponseBody
     public List<User> getUsers() {
         return userService.getUsers();
+    }
+
+    @GetMapping(path = "/studentUsernames")
+    @ResponseBody
+    public List<String> studentUsernames(@RequestParam(value = "term", required = false, defaultValue = "") String term) {
+        List<String> students = new ArrayList<>();
+
+        if (term.equals(""))
+            students = userService.getStudentsUsernames();
+        else
+            students = userService.getStudentsUsernames(term);
+
+        return students;
     }
 
     @GetMapping(path = "/{userId}/delete")

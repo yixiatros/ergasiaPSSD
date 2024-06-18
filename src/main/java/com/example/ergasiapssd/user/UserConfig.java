@@ -53,7 +53,31 @@ public class UserConfig {
             giorgos.setRegistrationDate(LocalDateTime.now());
             optionalStudentRole.ifPresent(giorgos::addRole);
 
-            userRepository.saveAll(List.of(admin, maria, giorgos));
+            User kostas = new User();
+            kostas.setName("Konstantinos");
+            kostas.setEmail("kostas@testmail.com");
+            kostas.setUsername("kostas");
+            kostas.setPassword(passwordEncoder.encode("kostas123"));
+            kostas.setRegistrationDate(LocalDateTime.now());
+            optionalStudentRole.ifPresent(kostas::addRole);
+
+            User stella = new User();
+            stella.setName("Stella");
+            stella.setEmail("stella@testmail.com");
+            stella.setUsername("stella");
+            stella.setPassword(passwordEncoder.encode("stella123"));
+            stella.setRegistrationDate(LocalDateTime.now());
+            optionalStudentRole.ifPresent(stella::addRole);
+
+            User giorgis = new User();
+            giorgis.setName("Giorgis");
+            giorgis.setEmail("giorgis@testmail.com");
+            giorgis.setUsername("giorgis");
+            giorgis.setPassword(passwordEncoder.encode("giorgis123"));
+            giorgis.setRegistrationDate(LocalDateTime.now());
+            optionalStudentRole.ifPresent(giorgis::addRole);
+
+            userRepository.saveAll(List.of(admin, maria, giorgos, kostas, stella, giorgis));
         };
     }
 

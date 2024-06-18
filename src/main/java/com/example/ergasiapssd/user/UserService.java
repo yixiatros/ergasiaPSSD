@@ -43,6 +43,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<String> getStudentsUsernames() { return userRepository.findUsernamesByRole("ROLE_STUDENT"); }
+
+    public List<String> getStudentsUsernames(String search) { return userRepository.findUsernamesByRoleViaSearch("ROLE_STUDENT", search); }
+
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }

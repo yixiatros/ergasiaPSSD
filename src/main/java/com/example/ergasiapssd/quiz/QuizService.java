@@ -85,7 +85,7 @@ public class QuizService {
 
         newQuiz.setCreator(userOptional.get());
 
-        if (setQuizFromParams(allRequestParams, newQuiz))
+        if (!setQuizFromParams(allRequestParams, newQuiz))
             return false;
 
         return true;

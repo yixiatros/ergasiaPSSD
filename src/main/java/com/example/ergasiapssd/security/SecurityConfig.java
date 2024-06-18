@@ -30,6 +30,8 @@ public class SecurityConfig {
                     auth
                             .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/vendor/**", "/fonts/**").permitAll()
                             .requestMatchers("/index", "/", "/error/**").permitAll()
+                            .requestMatchers("/users").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers("/users/studentUsernames").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
                             .requestMatchers("/users/logout").hasAnyAuthority("ROLE_ADMIN", "ROLE_STUDENT", "ROLE_TEACHER")
                             .requestMatchers("/quizzes/create", "/quizzes/myQuizzes").hasAuthority("ROLE_TEACHER")
                             .requestMatchers("/quizzes/solve/*").hasAuthority("ROLE_STUDENT")

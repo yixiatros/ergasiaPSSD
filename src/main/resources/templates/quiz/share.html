@@ -10,10 +10,30 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../../static/css/application.css"/>
     <link rel="stylesheet" th:href="@{/css/quiz.css}" href="../../static/css/quiz.css"/>
+    <link rel="stylesheet" th:href="@{/css/search.css}" href="../../static/css/search.css"/>
 
     <script type="text/javascript" src="../../static/js/application.js" th:src="@{/js/application.js}"></script>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#search_bar").autocomplete({
+                source: "/users/studentUsernames",
+                minLength: 4,
+                select: function(event, ui) {
+                    this.value = ui.item.label;
+                    $("#search_bar").val(ui.item.value);
+                    return false;
+                }
+            });
+
+        });
+    </script>
 </head>
 <body>
 
@@ -26,7 +46,7 @@
         <form th:action="@{'/quizzes/myQuizzes/' + ${quizId} + '/share'}" class="search-form" role="search" method="get">
             <div class="inner-addon left-addon">
                 <i id="search-icon" class="bi bi-search"></i>
-                <input class="search-bar form-control" name="search" type="text" role="searchbox" onfocus="searchIconChange()" onfocusout="searchIconFocusOut()" />
+                <input id="search_bar" class="search-bar form-control" name="search" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" type="text" role="searchbox" onfocus="searchIconChange()" onfocusout="searchIconFocusOut()" />
                 <button class="search-button btn btn-secondary" type="submit"><i class="search-button-icon bi bi-search"></i></button>
             </div>
         </form>
