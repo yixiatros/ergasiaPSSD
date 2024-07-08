@@ -44,10 +44,11 @@ public class Quiz {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "quizzes_answers",
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),
             joinColumns = @JoinColumn(
-                    name = "quiz_id", referencedColumnName = "id"),
+                    name = "quiz_id", referencedColumnName = "id", updatable = false, insertable = false),
             inverseJoinColumns = @JoinColumn(
-                    name = "answer_id", referencedColumnName = "id"))
+                    name = "answer_id", referencedColumnName = "id", updatable = false, insertable = false))
     private Set<Answer> answers = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
