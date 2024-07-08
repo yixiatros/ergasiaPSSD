@@ -126,20 +126,30 @@ public class QuizService {
             return;
 
         Quiz quiz = quizOptional.get();
+        List<Question> questions = quiz.getSortedQuestions();
         quiz.setQuestions(new HashSet<>());
+        for (Question q : questions) {
+            List<MultipleChoice> multipleChoices = q.getSortedMultipleChoices();
+            q.setMultipleChoices(new HashSet<>());
+            questionRepository.delete(q);
+
+            for (MultipleChoice mc : multipleChoices) multipleChoiceRepository.delete(mc);
+        }
 
         setQuizFromParams(allRequestParams, quiz);
     }
 
     private boolean setQuizFromParams(Map<String, String> allRequestParams, Quiz quiz) {
         Question newQuestion = null;
-        boolean isQuestionAddedToQuiz = false;
 
         for (var entry : allRequestParams.entrySet()) {
             if (entry.getKey().equals("title")){
                 quiz.setTitle(entry.getValue());
             } else if (entry.getKey().startsWith("question")){
-                isQuestionAddedToQuiz = false;
+                if (newQuestion != null) {
+                    questionRepository.save(newQuestion);
+                    quiz.addQuestion(newQuestion);
+                }
 
                 newQuestion = new Question();
                 newQuestion.setQuestion(entry.getValue());
@@ -149,16 +159,15 @@ public class QuizService {
                 if (newQuestion != null){
                     multipleChoiceRepository.save(multipleChoice);
                     newQuestion.addMultipleChoice(multipleChoice);
-                    questionRepository.save(newQuestion);
-                    if (!isQuestionAddedToQuiz){
-                        quiz.addQuestion(newQuestion);
-                        isQuestionAddedToQuiz = true;
-                    }
                 }
             } else if (entry.getKey().startsWith("radio")) {
-                if (newQuestion != null)
-                    newQuestion.setAnswer(Integer.parseInt(entry.getValue()));
+                if (newQuestion != null) newQuestion.setAnswer(Integer.parseInt(entry.getValue()));
             }
+        }
+
+        if (newQuestion != null) {
+            questionRepository.save(newQuestion);
+            quiz.addQuestion(newQuestion);
         }
 
         if (quiz.getQuestions().size() == 0)
